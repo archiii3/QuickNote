@@ -1,0 +1,199 @@
+# QuickNote
+
+QuickNote is a tiny, dependency-free command-line note manager written in Python.
+It stores notes in a local JSON file and supports adding, listing, viewing, deleting, and searching notes.
+
+## Features
+- Add timestamped notes
+- List notes with IDs and timestamps
+- View full note by ID
+- Delete note by ID
+- Search notes by text
+
+## Requirements
+- Python 3.8+
+
+## Installation
+Clone the repository and (optionally) install:
+```bash
+git clone https://github.com/YOUR_USERNAME/QuickNote.git
+cd QuickNote
+# Optional: create a virtualenv or add to PATH
+# add a note
+python notes.py add "Buy groceries"
+
+# list notes
+python notes.py list
+
+# view a note
+python notes.py view 2
+
+# delete a note
+python notes.py delete 2
+
+# search
+python notes.py search groceries
+
+---
+
+# Core script (notes.py)
+
+```python
+#!/usr/bin/env python3
+"""
+QuickNote - simple CLI note manager
+"""
+
+import argparse
+import json
+import os
+import sys
+from datetime import datetime
+from typing import List, Dict
+
+APP_DIR = os.path.join(os.path.expanduser("~"), ".quicknote")
+DB_PATH = os.path.join(APP_DIR, "notes.json")
+
+
+def ensure_storage():
+    os.makedirs(APP_DIR, exist_ok=True)
+    if not os.path.exists(DB_PATH):
+        with open(DB_PATH, "w", encoding="utf-8") as f:
+            json.dump([], f)
+
+
+def load_notes() -> List[Dict]:
+    ensure_storage()
+    with open(DB_PATH, "r", encoding="utf-8") as f:
+        try:
+            data = json.load(f)
+            if isinstance(data, list):
+                return data
+            return []
+        except json.JSONDecodeError:
+            return []
+
+
+def save_notes(notes: List[Dict]):
+    ensure_storage()
+    with open(DB_PATH, "w", encoding="utf-8") as f:
+        json.dump(notes, f, ensure_ascii=False, indent=2)
+
+
+def add_note(text: str):
+    notes = load_notes()
+    note_id = (max((n["id"] for n in notes), default=0) + 1) if notes else 1
+    note = {
+        "id": note_id,
+        "text": text,
+        "created_at": datetime.utcnow().isoformat() + "Z"
+    }
+    notes.append(note)
+    save_notes(notes)
+    print(f"Added note #{note_id}")
+
+
+def list_notes():
+    notes = load_notes()
+    if not notes:
+        print("No notes found.")
+        return
+    for n in notes:
+        ts = n.get("created_at", "")
+        preview = n.get("text", "").splitlines()[0]
+        if len(preview) > 80:
+            preview = preview[:77] + "..."
+        print(f"#{n['id']:>3}  {ts}  {preview}")
+
+
+def view_note(note_id: int):
+    notes = load_notes()
+    for n in notes:
+        if n["id"] == note_id:
+            print(f"Note #{n['id']} — created {n.get('created_at','')}\n")
+            print(n.get("text",""))
+            return
+    print(f"Note with id {note_id} not found.", file=sys.stderr)
+
+
+def delete_note(note_id: int):
+    notes = load_notes()
+    new_notes = [n for n in notes if n["id"] != note_id]
+    if len(new_notes) == len(notes):
+        print(f"Note with id {note_id} not found.", file=sys.stderr)
+        return
+    save_notes(new_notes)
+    print(f"Deleted note #{note_id}")
+
+
+def search_notes(query: str):
+    notes = load_notes()
+    hits = [n for n in notes if query.lower() in n.get("text","").lower()]
+    if not hits:
+        print("No matches.")
+        return
+    for n in hits:
+        preview = n.get("text","").splitlines()[0]
+        if len(preview) > 80:
+            preview = preview[:77] + "..."
+        print(f"#{n['id']:>3}  {n.get('created_at','')}  {preview}")
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(prog="notes.py", description="QuickNote CLI")
+    sub = parser.add_subparsers(dest="cmd", required=True)
+
+    p_add = sub.add_parser("add", help="Add a new note")
+    p_add.add_argument("text", nargs="+", help="Text of the note")
+
+    p_list = sub.add_parser("list", help="List notes")
+
+    p_view = sub.add_parser("view", help="View a note by id")
+    p_view.add_argument("id", type=int, help="Note id")
+
+    p_delete = sub.add_parser("delete", help="Delete a note by id")
+    p_delete.add_argument("id", type=int, help="Note id")
+
+    p_search = sub.add_parser("search", help="Search notes")
+    p_search.add_argument("query", nargs="+", help="Search query")
+
+    return parser.parse_args()
+
+
+def main():
+    args = parse_args()
+    cmd = args.cmd
+
+    if cmd == "add":
+        text = " ".join(args.text).strip()
+        if not text:
+            print("Cannot add an empty note.", file=sys.stderr)
+            return
+        add_note(text)
+
+    elif cmd == "list":
+        list_notes()
+
+    elif cmd == "view":
+        view_note(args.id)
+
+    elif cmd == "delete":
+        delete_note(args.id)
+
+    elif cmd == "search":
+        q = " ".join(args.query)
+        search_notes(q)
+
+    else:
+        print("Unknown command", file=sys.stderr)
+
+
+if __name__ == "__main__":
+    main()
+__pycache__/
+*.pyc
+.env
+.vscode/
+.idea/
+# keep local notes private if you want
+/quicknote_data/
