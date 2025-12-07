@@ -1,14 +1,33 @@
-# QuickNote
+# snap-deploy
 
-QuickNote is a tiny, dependency-free command-line note manager written in Python.
-It stores notes in a local JSON file and supports adding, listing, viewing, deleting, and searching notes.
+A tiny Python CLI tool to create, preview and quickly deploy small static sites to GitHub Pages.
 
 ## Features
-- Add timestamped notes
-- List notes with IDs and timestamps
-- View full note by ID
-- Delete note by ID
-- Search notes by text
+- Generate a minimal static site (index.html + assets)
+- Local preview using a simple HTTP server
+- Initialize a git repository and push to GitHub (requires `gh` CLI or GitHub token)
+
+## Requirements
+- Python 3.8+
+- git
+- Optional: GitHub CLI (`gh`) for creating remote repo automatically
+
+## Quickstart
+```bash
+# create a virtualenv (optional)
+python -m venv .venv
+source .venv/bin/activate
+
+pip install -r requirements.txt
+
+# generate a site in ./site
+python cli.py new site --name "My Site" --dir site
+
+# preview locally
+python cli.py serve site --port 8000
+
+# initialize git and create remote (requires gh)
+python cli.py deploy site --remote-name my-username/snap-deploy-demo
 
 ## Requirements
 - Python 3.8+
