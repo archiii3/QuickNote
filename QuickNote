@@ -41,6 +41,10 @@ cd QuickNote
 # add a note
 python notes.py add "Buy groceries"
 
+git clone https://github.com/YOUR_USERNAME/QuickNote.git
+cd QuickNote
+# Optional: create a virtualenv or add to PATH
+
 # list notes
 python notes.py list
 
