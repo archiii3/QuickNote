@@ -31,7 +31,9 @@ python cli.py deploy site --remote-name my-username/snap-deploy-demo
 
 ## Requirements
 - Python 3.8+
-
+- Generate a minimal static site (index.html + assets)
+- Local preview using a simple HTTP server
+- Initialize a git repository and push to GitHub (requires `gh` CLI or GitHub token)
 ## Installation
 Clone the repository and (optionally) install:
 ```bash
