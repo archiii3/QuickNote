@@ -1,7 +1,9 @@
 # snap-deploy
 
 A tiny Python CLI tool to create, preview and quickly deploy small static sites to GitHub Pages.
-
+- Generate a minimal static site (index.html + assets)
+- Local preview using a simple HTTP server
+- Initialize a git repository and push to GitHub (requires `gh` CLI or GitHub token)
 ## Features
 - Generate a minimal static site (index.html + assets)
 - Local preview using a simple HTTP server
