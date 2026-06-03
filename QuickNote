@@ -38,7 +38,9 @@ python cli.py deploy site --remote-name my-username/snap-deploy-demo
 - Initialize a git repository and push to GitHub (requires `gh` CLI or GitHub token)
 ## Installation
 Clone the repository and (optionally) install:
-```bash
+```bashOptional: GitHub CLI (`gh`) for creating remote repo automatically
+
+## Quickstart
 git clone https://github.com/YOUR_USERNAME/QuickNote.git
 cd QuickNote
 # Optional: create a virtualenv or add to PATH
