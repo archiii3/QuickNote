@@ -1,0 +1,51 @@
+# ShadowSync
+
+ShadowSync is a lightweight and intelligent file synchronization tool built with Python. It continuously monitors selected folders, detects file changes in real time, and automatically synchronizes them with backup locations or remote directories.
+
+## Features
+
+* Real-time file monitoring
+* Automatic backup creation
+* Incremental synchronization
+* Change history logging
+* Cross-platform support (Windows, Linux, macOS)
+* Configurable synchronization rules
+* Command-line interface
+
+## Installation
+
+```bash
+git clone https://github.com/yourusername/shadowsync.git
+cd shadowsync
+pip install -r requirements.txt
+```
+
+## Usage
+
+```bash
+python shadowsync.py --source ./Documents --target ./Backup
+```
+
+## Example
+
+```python
+from shadowsync import SyncManager
+
+sync = SyncManager(
+    source="Documents",
+    target="Backup"
+)
+
+sync.start()
+```
+
+## Future Improvements
+
+* Cloud storage integration
+* Web dashboard
+* End-to-end encryption
+* Multi-device synchronization
+
+## License
+
+MIT License
